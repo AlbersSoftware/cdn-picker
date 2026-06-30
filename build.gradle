@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'application'
+    // Resolves the correct per-OS JavaFX artifacts automatically (win/mac/linux).
+    // Needed for embedded real video playback (JFXPanel + MediaPlayer) in
+    // PlaybackPanel — plain Swing has no built-in video codec.
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+group   = 'com.cdnworkbench'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+// By default Gradle only bundles files under src/main/resources — anything
+// dropped directly into src/main/java (like an icon placed next to the
+// source it belongs with) is invisible to the build otherwise. This adds
+// src/main/java as a second resources directory, restricted to image
+// files only, so e.g. CDNpicker.png ends up on the runtime classpath
+// without needing to move it into a separate resources tree.
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/main/java'
+            include '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.ico'
+        }
+    }
+}
+
+application {
+    mainClass = 'com.cdnworkbench.Main'
+    // Worst case: edgeNodes(8) x cacheSize(500) x 64KB/segment ~= 256MB,
+    // plus UI/chart overhead, plus JavaFX media decoding buffers. 1536m
+    // gives comfortable headroom.
+    applicationDefaultJvmArgs = ['-Xmx1536m', '-Xms128m']
+}
+
+javafx {
+    version = '21.0.2'
+    modules = ['javafx.controls', 'javafx.swing', 'javafx.media']
+}
+
+repositories { mavenCentral() }
+
+jar {
+    manifest { attributes 'Main-Class': 'com.cdnworkbench.Main' }
+    from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
