@@ -1,4 +1,4 @@
-# CDN Picker- The Research Workbench
+# CDN Picker - The Research Workbench
 
 A Java 21 desktop simulator for exploring CDN cache-replacement strategies
 and adaptive-bitrate streaming, with a live Swing UI, real virtual threads,
@@ -182,3 +182,11 @@ coalescing; and the ABR model (see above) is a hybrid heuristic, not a
 named published algorithm. Treat this tool as good for building intuition
 and comparing relative trends under a controlled, identical workload
 not as a stand-in for production CDN benchmarking or capacity planning.
+
+## Video Demo
+
+
+
+https://github.com/user-attachments/assets/79e3f3db-171f-4845-aedb-99fce12e026a
+
+
